@@ -1,0 +1,25 @@
+
+================================================================================
+                      SKILL EXTRACTION EVALUATION REPORT
+================================================================================
+
+OVERALL METRICS
+---------------
+Macro Precision:  0.6268 (± 0.2521)
+Macro Recall:     1.0000 (± 0.0000)
+Macro F1-Score:   0.7387 (± 0.2094)
+
+Micro Precision:  0.5045
+Micro Recall:     1.0000
+Micro F1-Score:   0.6706
+
+EXTRACTION STATISTICS
+---------------------
+Total Samples Evaluated:  1000
+Total Unique Skills:      234
+Valid Skills Found:       226
+Unknown Skills Found:     8
+Skill Coverage Rate:      100.00%
+
+================================================================================
+    
