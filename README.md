@@ -9,6 +9,8 @@
 - [Technologies Used](#technologies-used)
 - [Project Structure](#project-structure)
 - [Important Notes](#important-notes)
+- [Project Contributors](#project-contributors)
+- [Section & Group Details](#section--group-details)
 
 ---
 
@@ -403,7 +405,11 @@ Solutions:
 - Hamza Yasser
 - Mariam Medhat
 
+---
+
 ### Section&Group Details 
 
 - Section : 14
 - Group : 3
+
+---
