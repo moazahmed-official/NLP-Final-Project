@@ -1,384 +1,409 @@
-# استخراج المهارات وتلخيص وصف الوظائف باستخدام تقنيات معالجة اللغة الطبيعية (NLP)
+# Skill Extraction and Job Description Summarization Using Natural Language Processing (NLP)
 
-<div dir="rtl">
-
-## 📋 جدول المحتويات
-- [نظرة عامة](#-نظرة-عامة)
-- [وصف البيانات](#-وصف-البيانات)
-- [خطوات العمل](#-خطوات-العمل)
-- [كيفية تشغيل المشروع](#-كيفية-تشغيل-المشروع)
-- [ناتج المشروع](#-ناتج-المشروع)
-- [التقنيات المستخدمة](#-التقنيات-المستخدمة)
-- [بنية الملفات](#-بنية-الملفات)
-- [ملاحظات مهمة](#-ملاحظات-مهمة)
+## 📋 Table of Contents
+- [Overview](#overview)
+- [Dataset Description](#dataset-description)
+- [Workflow](#workflow)
+- [How to Run the Project](#how-to-run-the-project)
+- [Project Output](#project-output)
+- [Technologies Used](#technologies-used)
+- [Project Structure](#project-structure)
+- [Important Notes](#important-notes)
 
 ---
 
-## 🎯 نظرة عامة
+## 🎯 Overview
 
-هذا المشروع يقدم نظامًا متكاملًا لمعالجة اللغة الطبيعية (NLP) يهدف إلى:
+This project provides a complete Natural Language Processing (NLP) pipeline designed to:
 
-1. **استخراج المهارات التقنية** من وصف الوظائف بشكل آلي
-2. **تلخيص أوصاف الوظائف** لتسهيل قراءتها وفهمها
-3. **تحليل وتصور البيانات** لفهم سوق العمل بشكل أفضل
-
-### لماذا هذا المشروع مهم؟
-
-- **توفير الوقت**: بدلاً من قراءة أوصاف وظائف طويلة، يمكن الحصول على ملخص سريع
-- **تحديد المهارات المطلوبة**: معرفة المهارات الأكثر طلبًا في سوق العمل
-- **دعم القرار**: مساعدة الباحثين عن عمل في تحديد المهارات التي يحتاجون لتطويرها
-- **تحليل سوق العمل**: فهم توزيع الوظائف والمهارات المطلوبة
+1. **Automatically extract technical skills** from job descriptions  
+2. **Summarize long job descriptions** for faster and clearer understanding  
+3. **Analyze and visualize job market trends** based on skills and roles  
 
 ---
 
-## 📊 وصف البيانات
+## 📊 Dataset Description
 
-### ملف البيانات: `data/jobs.csv`
+### Data File: `data/jobs.csv`
 
-يحتوي مجموعة البيانات على المعلومات التالية:
+| Field | Description | Type |
+|-------|-------------|------|
+| `id` | Unique job identifier | Numeric |
+| `Job Title` | Name of the job | Text |
+| `Job Description` | Full job description | Text |
 
-| الحقل | الوصف | النوع |
-|-------|--------|------|
-| `id` | المعرف الفريد للوظيفة | رقمي |
-| `Job Title` | المسمى الوظيفي | نصي |
-| `Job Description` | الوصف التفصيلي للوظيفة | نصي |
-
-### إحصائيات البيانات:
-- إجمالي عدد الوظائف: أكثر من 60,000 وظيفة
-- متوسط طول الوصف: ~100 كلمة
-- تغطي مجالات تقنية متعددة
+### Dataset Stats:
+- **Total jobs:** ~60,000  
+- **Average description length:** ~100 words  
+- **Coverage:** Multiple tech-related fields  
 
 ---
 
-## 🔄 خطوات العمل
+## 🔄 Workflow
 
-### المرحلة 1: تحميل ومعالجة البيانات (Preprocessing)
+### **Phase 1 — Data Preprocessing**
 
-تتم معالجة النصوص عبر الخطوات التالية:
+Text preprocessing includes:
 
 ```
-النص الأصلي → تحويل للأحرف الصغيرة → إزالة علامات الترقيم → إزالة الأرقام → إزالة الكلمات الشائعة → التجزئة (Tokenization) → استخلاص الجذر (Lemmatization)
+Raw text → lowercase → punctuation removal → number removal → stopword removal → tokenization → lemmatization → POS tagging
 ```
 
-**الوظائف المنفذة في `src/preprocess.py`:**
-- `clean_text()`: تنظيف النص الأساسي
-- `tokenize()`: تجزئة النص إلى كلمات
-- `remove_stopwords_from_tokens()`: إزالة الكلمات الشائعة
-- `lemmatize_tokens()`: استخلاص الجذر للكلمات
-- `get_pos_tags()`: تحديد نوع الكلمة (اسم، فعل، صفة...)
-
-### المرحلة 2: استخراج المهارات (Skill Extraction)
-
-#### الطريقة الأولى: Rule-Based (قائمة على القواعد)
-- استخدام قائمة مهارات محددة مسبقًا
-- مطابقة الكلمات المفتاحية في النص
-- دقة عالية للمهارات المعروفة
-
-#### الطريقة الثانية: ML-Based (قائمة على تعلم الآلة)
-- استخدام TF-IDF لاستخراج المصطلحات المهمة
-- استخدام spaCy NER لتحديد الكيانات
-- قدرة على اكتشاف مهارات جديدة
-
-**المهارات المدعومة:**
-- لغات البرمجة: Python, Java, JavaScript, C++, Go, Rust...
-- تطوير الويب: React, Angular, Vue, Django, Flask, Node.js...
-- قواعد البيانات: MySQL, PostgreSQL, MongoDB, Redis...
-- السحابة: AWS, Azure, GCP, Docker, Kubernetes...
-- علم البيانات: TensorFlow, PyTorch, Pandas, NumPy...
-- وأكثر من 200 مهارة أخرى
-
-### المرحلة 3: التلخيص (Text Summarization)
-
-#### الطريقة الأولى: TextRank
-- خوارزمية تعتمد على الرسم البياني
-- استخراج الجمل الأكثر أهمية
-- سريعة وفعالة
-
-#### الطريقة الثانية: Transformer-Based
-- استخدام نماذج مثل T5-small, BART
-- تلخيص تجريدي (Abstractive)
-- جودة أعلى ولكن أبطأ
-
-### المرحلة 4: التقييم (Evaluation)
-
-يتم تقييم دقة استخراج المهارات عبر:
-
-| المقياس | الوصف |
-|---------|--------|
-| **Precision** | نسبة المهارات المستخرجة الصحيحة |
-| **Recall** | نسبة المهارات الفعلية التي تم استخراجها |
-| **F1-Score** | المتوسط التوافقي للدقة والاسترجاع |
-
-### المرحلة 5: التصور (Visualization)
-
-الرسومات البيانية المتاحة:
-- 📊 مخطط أعمدة للمسميات الوظيفية الأكثر شيوعًا
-- ☁️ سحابة الكلمات لأوصاف الوظائف
-- 📈 أكثر المهارات طلبًا
-- 📉 توزيع عدد المهارات لكل وظيفة
+Functions in `src/preprocess.py`:
+- `clean_text()`
+- `tokenize()`
+- `remove_stopwords_from_tokens()`
+- `lemmatize_tokens()`
+- `get_pos_tags()`
 
 ---
 
-## 🚀 كيفية تشغيل المشروع
+### **Phase 2 — Skill Extraction**
 
-### المتطلبات الأساسية
-- Python 3.8 أو أحدث
-- pip (مدير حزم Python)
+#### 1. **Rule-Based Method**
+- Uses a predefined skill list  
+- Keyword matching  
+- High precision for known skills  
 
-### خطوات التثبيت
+#### 2. **ML-Based Method**
+- TF-IDF for keyword importance  
+- spaCy NER for identifying entities  
+- Can detect new/unlisted skills  
 
-#### 1. استنساخ المشروع
+**Supported Skills Include:**
+- Programming: Python, Java, JavaScript, C++, Go, Rust, etc.  
+- Web Dev: React, Angular, Vue, Django, Flask, Node.js  
+- Databases: MySQL, PostgreSQL, MongoDB, Redis  
+- Cloud: AWS, Azure, GCP, Docker, Kubernetes  
+- Data Science: TensorFlow, PyTorch, Pandas, NumPy  
+- And **200+ more**  
+
+---
+
+### **Phase 3 — Text Summarization**
+
+#### 1. **TextRank**
+- Graph-based ranking  
+- Extractive summaries  
+- Fast and efficient  
+
+#### 2. **Transformer-Based Models**
+- T5-small, BART  
+- Abstractive summarization  
+- Better quality, slower runtime  
+
+---
+
+### **Phase 4 — Evaluation**
+
+| Metric | Meaning |
+|--------|---------|
+| **Precision** | % of extracted skills that are correct |
+| **Recall** | % of actual skills successfully extracted |
+| **F1-Score** | Harmonic mean of precision & recall |
+
+---
+
+### **Phase 5 — Visualization**
+
+Generated charts include:
+- Most common job titles  
+- Word cloud of job descriptions  
+- Most frequent skills  
+- Skill count distribution per job  
+
+---
+
+## 🚀 How to Run the Project
+
+### **Requirements**
+- Python 3.8+
+- pip package manager
+
+---
+
+### **1. Clone the repository**
 ```bash
 git clone <repository-url>
 cd final_project
 ```
 
-#### 2. إنشاء بيئة افتراضية (اختياري لكن موصى به)
+### **2. Create a virtual environment**
 ```bash
 python -m venv venv
-# تفعيل البيئة على Windows
+# Windows
 venv\Scripts\activate
-# أو على Linux/Mac
+# Linux/Mac
 source venv/bin/activate
 ```
 
-#### 3. تثبيت المتطلبات
+### **3. Install dependencies**
 ```bash
 pip install -r requirements.txt
 ```
 
-#### 4. تحميل نموذج spaCy
+### **4. Download spaCy model**
 ```bash
 python -m spacy download en_core_web_sm
 ```
 
-### تشغيل المشروع
+---
 
-#### تشغيل معالجة البيانات
+## ▶️ Running the Pipeline
+
+### **Run Preprocessing**
 ```bash
 cd src
 python preprocess.py
 ```
 
-#### تشغيل استخراج المهارات
+### **Run Skill Extraction**
 ```bash
 python skill_extractor.py
 ```
-الناتج: `output/extracted_skills.csv`
+Output: `output/extracted_skills.csv`
 
-#### تشغيل التلخيص
+### **Run Summarization**
 ```bash
 python summarizer.py
 ```
-الناتج: `output/job_summary.csv`
+Output: `output/job_summary.csv`
 
-#### تشغيل التقييم
+### **Run Evaluation**
 ```bash
 python evaluate.py
 ```
 
-#### إنشاء الرسومات البيانية
+### **Generate Visualizations**
 ```bash
 python viz.py
 ```
-الناتج: `output/figures/`
+Output directory: `output/figures/`
 
-### تشغيل Notebook التفاعلي
+### **Interactive Notebook**
 ```bash
 jupyter notebook notebooks/exploration.ipynb
 ```
 
 ---
 
-## 📁 ناتج المشروع
+## 🌐 Streamlit Web App (Interactive UI)
 
-### 1. ملف المهارات المستخرجة
-**المسار:** `output/extracted_skills.csv`
+A fully interactive Streamlit web interface is included in:
+
+**`streamlit_app/`**
+
+To run it:
+
+```powershell
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+pip install streamlit
+
+cd streamlit_app
+streamlit run app.py
+```
+
+Default URL:  
+`http://localhost:8501`
+
+To specify a port:
+
+```powershell
+streamlit run app.py --server.port 8502
+```
+
+### Available Pages:
+- **Home** – Upload & preview data  
+- **Data Overview** – Stats and tables  
+- **Preprocessing** – Clean text & compare before/after  
+- **Skill Extraction** – Rule-based, ML, or hybrid  
+- **Summarization** – TextRank or Transformer  
+- **Visualization** – Word cloud and charts  
+
+---
+
+## 📁 Project Output
+
+### 1. Extracted Skills  
+`output/extracted_skills.csv`
 
 | id | Job Title | Extracted Skills |
 |----|-----------|------------------|
 | 0 | Flutter Developer | flutter, dart, android, ios, git |
 | 1 | Python Developer | python, django, sql, api, git |
 
-### 2. ملف ملخصات الوظائف
-**المسار:** `output/job_summary.csv`
+---
+
+### 2. Summaries  
+`output/job_summary.csv`
 
 | id | Job Title | Summary |
 |----|-----------|---------|
-| 0 | Flutter Developer | نبحث عن مطور Flutter بخبرة سنة... |
+| 0 | Flutter Developer | We are looking for a professional Flutter Developer... |
 
-### 3. الرسومات البيانية
-**المسار:** `output/figures/`
-- `job_titles.png` - توزيع المسميات الوظيفية
-- `wordcloud.png` - سحابة الكلمات
-- `skill_frequency.png` - تكرار المهارات
-- `skills_per_job.png` - عدد المهارات لكل وظيفة
+---
 
-### مثال على الناتج
+### 3. Visualizations  
+`output/figures/`
 
-**الوظيفة الأصلية:**
+- `job_titles.png`  
+- `wordcloud.png`  
+- `skill_frequency.png`  
+- `skills_per_job.png`  
+
+---
+
+### **Example Result**
+
+**Original:**
 ```
 Flutter Developer
-We are looking for hire experts flutter developer. So you are eligible this post 
-then apply your resume. Job Types: Full-time, Part-time. Salary: ₹20,000.00 - 
-₹40,000.00 per month. Benefits: Flexible schedule, Food allowance...
+We are looking for hire experts flutter developer...
 ```
 
-**المهارات المستخرجة:**
+**Skills Extracted:**
 ```
 flutter, dart, android, ios, mobile development
 ```
 
-**الملخص:**
+**Summary:**
 ```
-نبحث عن مطور Flutter محترف للعمل بدوام كامل أو جزئي براتب 20-40 ألف روبية شهريًا.
+Seeking a Flutter Developer for full-time or part-time work with a salary range of ₹20,000–₹40,000 per month.
 ```
 
 ---
 
-## 🛠 التقنيات المستخدمة
+## 🛠 Technologies Used
 
-### لغة البرمجة
-- **Python 3.8+**
+### NLP
+- NLTK  
+- spaCy  
+- Transformers (T5, BART)
 
-### معالجة اللغة الطبيعية
-| المكتبة | الاستخدام |
-|---------|----------|
-| NLTK | التجزئة، إزالة الكلمات الشائعة، استخلاص الجذر |
-| spaCy | NER، تحليل النص |
-| Transformers | نماذج التلخيص (T5, BART) |
+### Machine Learning
+- scikit-learn  
+- PyTorch  
 
-### تعلم الآلة
-| المكتبة | الاستخدام |
-|---------|----------|
-| scikit-learn | TF-IDF، مقاييس التقييم |
-| PyTorch | دعم نماذج Transformers |
+### Data Analysis & Visualization
+- Pandas  
+- NumPy  
+- Matplotlib  
+- Seaborn  
+- WordCloud  
 
-### تحليل وتصور البيانات
-| المكتبة | الاستخدام |
-|---------|----------|
-| Pandas | معالجة البيانات |
-| NumPy | العمليات الحسابية |
-| Matplotlib | الرسومات البيانية |
-| Seaborn | تحسين المظهر |
-| WordCloud | سحابة الكلمات |
-
-### أدوات التطوير
-- Jupyter Notebook
-- Git
+### Tools
+- Jupyter Notebook  
+- Git  
+- Streamlit  
 
 ---
 
-## 📂 بنية الملفات
+## 📂 Project Structure
 
 ```
 project/
 │
-├── 📁 data/
-│   └── jobs.csv              # مجموعة البيانات الأصلية
+├── data/
+│   └── jobs.csv
 │
-├── 📁 src/
-│   ├── preprocess.py         # خط معالجة النصوص
-│   ├── skill_extractor.py    # استخراج المهارات
-│   ├── summarizer.py         # تلخيص النصوص
-│   ├── evaluate.py           # تقييم الأداء
-│   └── viz.py                # الرسومات البيانية
+├── src/
+│   ├── preprocess.py
+│   ├── skill_extractor.py
+│   ├── summarizer.py
+│   ├── evaluate.py
+│   └── viz.py
 │
-├── 📁 notebooks/
-│   └── exploration.ipynb     # دفتر الاستكشاف التفاعلي
+├── streamlit_app/
+│   ├── app.py
+│   ├── pages/
+│   │   ├── 1_Data_Overview.py
+│   │   ├── 2_Preprocessing.py
+│   │   ├── 3_Skill_Extraction.py
+│   │   ├── 4_Summarization.py
+│   │   └── 5_Visualization.py
+│   ├── src/
+│   │   ├── preprocess.py
+│   │   ├── skill_extractor.py
+│   │   ├── summarizer.py
+│   │   └── viz.py
+│   ├── data/
+│   │   └── jobs.csv
+│   └── README.md
 │
-├── 📁 output/
-│   ├── extracted_skills.csv  # المهارات المستخرجة
-│   ├── job_summary.csv       # ملخصات الوظائف
-│   └── 📁 figures/           # الرسومات البيانية
+├── notebooks/
+│   └── exploration.ipynb
 │
-├── requirements.txt          # المتطلبات
-└── README.md                 # هذا الملف
+├── output/
+│   ├── extracted_skills.csv
+│   ├── job_summary.csv
+│   └── figures/
+│
+├── requirements.txt
+└── README.md
 ```
-
-### شرح الملفات
-
-| الملف | الوظيفة |
-|-------|---------|
-| `preprocess.py` | تنظيف ومعالجة النصوص |
-| `skill_extractor.py` | استخراج المهارات بطريقتين |
-| `summarizer.py` | تلخيص أوصاف الوظائف |
-| `evaluate.py` | حساب مقاييس الأداء |
-| `viz.py` | إنشاء الرسومات البيانية |
 
 ---
 
-## ⚠️ ملاحظات مهمة
+## ⚠️ Important Notes
 
-### تنظيم الكود
-- كل وحدة (module) مستقلة ويمكن تشغيلها منفردة
-- استخدام التوثيق (docstrings) لجميع الدوال
-- اتباع معايير PEP 8 للكتابة
+### Code Organization
+- Each module is standalone  
+- All functions include docstrings  
+- Follows PEP8 style guidelines  
 
-### كيفية إضافة مهارات جديدة
-
-في ملف `src/skill_extractor.py`:
+### Adding New Skills
+Inside `src/skill_extractor.py`:
 
 ```python
 PREDEFINED_SKILLS = {
-    # أضف المهارات الجديدة هنا
-    'new_skill_1',
-    'new_skill_2',
-    ...
+    "new_skill_1",
+    "new_skill_2",
 }
 ```
 
-### كيفية تحسين التلخيص
+### Improving Summaries
 
-1. **استخدام نموذج أكبر:**
+Use larger models:
 ```python
 summarizer = TransformerSummarizer(model_name='facebook/bart-large-cnn')
 ```
 
-2. **تعديل طول الملخص:**
+Control summary length:
 ```python
 summary = summarizer.summarize(text, max_length=200, min_length=50)
 ```
 
-3. **استخدام TextRank مع جمل أكثر:**
+Increase TextRank sentences:
 ```python
 textrank.summarize(text, num_sentences=5)
 ```
 
-### نصائح للأداء الأفضل
+### Performance Tips
+- Use TextRank for large datasets  
+- Use hybrid extraction for best accuracy  
+- Use sampling during experimentation  
 
-1. **للمجموعات الكبيرة:** استخدم TextRank بدلاً من Transformers
-2. **للدقة العالية:** استخدم الطريقة الهجينة (hybrid) لاستخراج المهارات
-3. **للسرعة:** قلل حجم العينة أثناء التجربة
+### About `src` Naming Conflict
+Both root and Streamlit folders include a `src/` directory, which may cause import conflicts.
 
-### حل المشاكل الشائعة
-
-| المشكلة | الحل |
-|---------|------|
-| خطأ في NLTK | `python -c "import nltk; nltk.download('all')"` |
-| خطأ في spaCy | `python -m spacy download en_core_web_sm` |
-| نفاد الذاكرة | قسم البيانات إلى دفعات أصغر |
-
----
-
-## 📧 التواصل
-
-للأسئلة أو الاقتراحات، يرجى فتح Issue في المستودع.
+Solutions:
+- Run Streamlit from its folder  
+- Add `streamlit_app/` to `sys.path`  
+- Rename one of the directories  
 
 ---
 
-## 📄 الرخصة
+### Project Contributors
 
-هذا المشروع مرخص تحت رخصة MIT.
+- Moaz Ahmed 
+- Mostafa Rabee
+- Mostafa Ahmed
+- Hamza Yasser
+- Mariam Medhat
 
----
+### Section&Group Details 
 
-<div align="center">
-
-**تم تطويره بـ ❤️ باستخدام Python و NLP**
-
-</div>
-
-</div>
-#   N L P - F i n a l - P r o j e c t  
- 
+- Section : 14
+- Group : 3
